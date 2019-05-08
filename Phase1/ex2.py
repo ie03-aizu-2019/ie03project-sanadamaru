@@ -63,6 +63,8 @@ for i in range(0,M-1):
         askxy(i,j)
 
 # print(type(points[0]))
+
+points.sort()
         
 for i in points:
     # print("{0:.5f}".format(points[i].resx),end=' ')
