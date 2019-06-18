@@ -44,7 +44,8 @@ def get_cross_point(p1, q1, p2, q2):
         return Point(x, y)
     else:
         return None
-    
+
+
 
 class Graph:
     class Edge:
@@ -169,7 +170,37 @@ def ctoi(a, N):
 
 # def itoc(i):
     
-        
+def distance(x0,y0,x1,y1,x2,y2): 
+    a = x2 - x1;
+    b = y2 - y1;
+    a2 = a * a;
+    b2 = b * b;
+    r2 = a2 + b2;
+    tt = -(a*(x1-x0)+b*(y1-y0));
+    if tt<0:
+        return math.sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
+
+    if tt>r2:        
+        return math.sqrt((x2-x0)*(x2-x0) + (y2-y0)*(y2-y0));
+
+
+    f1 = a*(y1-y0)-b*(x1-x0);
+    return math.sqrt((f1*f1)/r2 );
+
+
+
+def cross(x0,y0,x1,y1,x2,y2):
+    d1 = math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));    
+    d2 = distance(x0,y0,x1,y1,x2,y2);    
+    sin = d2/d1
+    cos = math.sqrt(1-sin*sin)
+    d3 = d1*cos;
+    ab = math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));    
+    x = (x1*(ab-d3)+x2*d3)/ab;
+    y = (y1*(ab-d3)+y2*d3)/ab;
+
+    return Point(x, y)
+
 
 # 線分群からグラフ(Graph)を生成する。
 # def segment_arrangement(segments):
@@ -225,17 +256,33 @@ if __name__ == '__main__':
             cross_point1, u1, c1 = G[i][j]
             cross_point2, u2, c2 = G[i][j+1]
             graph.add_edge(c1, c2, get_distance(cross_point1, cross_point2))
-    
-    for q in range(Q):
-        a, b, k = map(str, input().split())
-        u = ctoi(a, N)
-        v = ctoi(b, N)
-        if u >= N+len(cross_points) or v >= N+len(cross_points):
-            print("NA")
-        else:
-            # print(u, v, k)
-            ans = graph.get_k_shortest_path(u, v, int(k))        
-            for e in ans:
-                d, path = e
-                print(d)
 
+    # print(cross(11, 5, 5, 5, 9, 5))
+    EPS = 10**(-9)
+    for p in range(P):
+        x, y = map(int, input().split())
+        pt = Point(x, y)
+        dist = 10**9
+        closest_point = Point(0, 0)
+        for s in segments:
+            a, b = s
+            p1 = points[a]
+            p2 = points[b]            
+            if abs(y-p1.y) < EPS or abs(y-p2.y) < EPS:
+                print(pt, p1, p2, dist)
+                dist, closest_point = min((dist, closest_point),
+                                          (get_distance(pt, p1), p1),
+                                          (get_distance(pt, p2), p2))
+                print(dist)
+            else:
+                cross_point = cross(x, y, p1.x, p1.y, p2.x, p2.y)
+                dist, closest_point = min((dist, closest_point),
+                                          (get_distance(pt, p1), p1),
+                                          (get_distance(pt, p2), p2),
+                                          (get_distance(pt, cross_point), cross_point))
+        print("dist", dist)
+        print(closest_point.x, closest_point.y)
+        points.append(pt)
+        points.append(closest_point)
+        segments.append((len(points)-2, len(points)-1))
+        

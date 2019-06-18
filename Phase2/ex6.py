@@ -238,4 +238,11 @@ if __name__ == '__main__':
             for e in ans:
                 d, path = e
                 print(d)
+                for p in path:
+                    p += 1
+                    if p > N:
+                        print('C', end="")
+                        p -= N
+                    print(p, end=" ")
+                print()
 

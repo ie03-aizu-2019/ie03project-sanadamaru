@@ -59,6 +59,12 @@ class Graph:
         self.INF = 10**9
         self.previous_node = [self.INF] * V
         self.dist_from_start = [self.INF] * V
+        self.k = 0
+        self.bridges = []
+        self.ords = [0] * V
+        self.low = [0] * V
+        self.vis = [False] * V
+        
 
     def add_edge(self, v, to, cost):
         self.graph[v].append(self.Edge(to, cost))
@@ -159,6 +165,32 @@ class Graph:
         self.graph = tmp
         return ans
 
+    def dfs(self, v, p):
+        self.vis[v] = True
+        self.ords[v] = self.k
+        self.k = self.k+1
+        self.low[v] = self.ords[v]
+
+        ct = 0
+        for i in self.graph[v]:
+            u = i.to
+            if self.vis[u] == False:
+                ct += 1
+                self.dfs(u, v)
+                self.low[v] = min(self.low[v], self.low[u])
+                if self.ords[v] < self.low[u]:
+                    self.bridges.append((v, u))
+            elif u != p:
+                self.low[v] = min(self.low[v], self.ords[u])
+
+    def calc_bridges(self):
+        for i in range(self.V):
+            if self.vis[i] == False:                
+                self.dfs(i, -1)
+
+        return self.bridges
+                    
+
 # C10 のような交差点を表す入力を頂点番号を表す整数に変換
 def ctoi(a, N):
     if a[0] == 'C':
@@ -167,75 +199,23 @@ def ctoi(a, N):
         u = int(a)-1
     return u
 
-# def itoc(i):
+# def itoc(i):    
     
-        
 
 # 線分群からグラフ(Graph)を生成する。
 # def segment_arrangement(segments):
 if __name__ == '__main__':
 
-    N, M, P, Q = map(int,input().split())
+    N, M = map(int,input().split())
 
-    points = [Point(0, 0)]*N
-    for i in range(N):
+    graph = Graph(N)
+    for i in range(M):
         x, y = map(int, input().split())
-        points[i] = Point(x, y)
-
-    segments = [(0, 0)]*M
-    for i in range(M):
-        p1, p2 = map(int, input().split())
-        p1 -= 1
-        p2 -= 1
-        segments[i] = (p1, p2)
-
-    cross_points = []
-
-    for i in range(0, M-1):
-        for j in range(i+1, M):
-            a1, b1 = segments[i]
-            a2, b2 = segments[j]
-            p1 = points[a1]
-            q1 = points[b1]
-            p2 = points[a2]
-            q2 = points[b2]        
-            cross_point = get_cross_point(p1, q1, p2, q2)
-            if cross_point != None:
-                cross_points.append((cross_point, i, j))
-
-    cross_points.sort()
-
-    G = [[]for _ in range(M)]
-    for i, (p, a, b) in enumerate(cross_points):
-        G[a].append((p, b, N+i))
-        G[b].append((p, a, N+i))
+        x -= 1
+        y -= 1
+        graph.add_edge(x, y, 1)
         
-    graph = Graph(N+len(cross_points))
-
-    for i in range(M):
-        l = len(G[i])
-        a1, b1 = segments[i]
-        p1 = points[a1]
-        q1 = points[b1]
-        # graph.add_edge(a1, b1, get_distance(p1, q1))
-        G[i].append((p1, i, a1))
-        G[i].append((q1, i, b1))
-        G[i].sort()
-        for j in range(0, l+1):
-            cross_point1, u1, c1 = G[i][j]
-            cross_point2, u2, c2 = G[i][j+1]
-            graph.add_edge(c1, c2, get_distance(cross_point1, cross_point2))
-    
-    for q in range(Q):
-        a, b, k = map(str, input().split())
-        u = ctoi(a, N)
-        v = ctoi(b, N)
-        if u >= N+len(cross_points) or v >= N+len(cross_points):
-            print("NA")
-        else:
-            # print(u, v, k)
-            ans = graph.get_k_shortest_path(u, v, int(k))        
-            for e in ans:
-                d, path = e
-                print(d)
-
+    bridges = graph.calc_bridges()
+    print(len(bridges))
+    for a, b in bridges:
+        print(a+1, b+1)
