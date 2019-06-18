@@ -1,0 +1,44 @@
+#線分の端点の座標1(x0,y0)
+#線分の端点の座標2(x1,y1)
+#追加の座標(x2,y2)
+
+import math
+
+x0 = input();
+y0 = input();
+x1 = input();
+y1 = input();
+x2 = input();
+y2 = input();
+
+
+def distance(x0,y0,x1,y1,x2,y2):
+    a = x2 - x1;
+    b = y2 - y1;
+    a2 = a * a;
+    b2 = b * b;
+    r2 = a2 + b2;
+    tt = -(a*(x1-x0)+b*(y1-y0));
+    if tt<0:
+        return math.sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
+
+    if tt>r2:
+        return math.sqrt((x2-x0)*(x2-x0) + (y2-y0)*(y2-y0));
+
+    f1 = a*(y1-y0)-b*(x1-x0);
+    return math.sqrt((f1*f1)/r2);
+
+
+def cross(x0,y0,x1,y1,x2,y2):
+    d1 = sqrt((x2-x0)*(x2-x0)+(y2-y0)*(y2-y0));
+    d2 = distance(x0,y0,x1,y1,x2,y2);
+    sin = d2/d1;
+    cos = sqrt(1-sin*sin);
+    d3 = d1*cos;
+    ab = sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
+    x = (x0*(ab-d3)+x1*d3)/ab;
+    y = (y0*(ab-d3)+y1*d3)/ab;
+    print(x+" "+y);
+
+    return #xとy両方を返すポインタ
+    
