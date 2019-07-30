@@ -244,7 +244,6 @@ if __name__ == '__main__':
         N += 2
         M += 1
 
-    print('a')
     cross_points = []
 
     for i in range(0, M-1):
@@ -292,8 +291,12 @@ if __name__ == '__main__':
             # print(u, v, k)
             ans = graph.get_k_shortest_path(u, v, int(k))        
             for e in ans:
-                d, path = e
-                print(d)
+                d, path = e                
+                if d == 1000000000:
+                    print("NA")
+                    continue
+                else:
+                    print(d)
                 for p in path:
                     p += 1
                     if p > N:
@@ -301,4 +304,4 @@ if __name__ == '__main__':
                         p -= N
                     print(p, end=" ")
                 print()
-
+        print()
