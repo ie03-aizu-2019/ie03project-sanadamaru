@@ -1,10 +1,9 @@
 #include <iostream>
 #include <random>
-#include <map>
-#include <utility>
+#include <map>XS
 using namespace std;
 
-typedef pair<int, int> Pii;
+using Pii = pair<int, int>;
 
 int main() {
   int N = 10, M = 10, P = 10, Q = 10;

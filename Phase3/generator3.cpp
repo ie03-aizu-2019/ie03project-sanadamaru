@@ -7,7 +7,7 @@ using namespace std;
 typedef pair<int, int> Pii;
 
 int main() {
-  int N = 10, M = 10, P = 10, Q = 10;
+  int N = 1000, M = 1000, P = 1000, Q = 1000;
   int MAX_xy = 100000;
 
   cout << N << " " << M << " " << P << " " << Q << endl;
